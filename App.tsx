@@ -2,6 +2,23 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Modal, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
+
+// EASビルドや本番環境でのみ広告ライブラリをインポート
+let BannerAd: any = null;
+let BannerAdSize: any = null;
+let TestIds: any = null;
+
+if (Constants.appOwnership !== 'expo') {
+  try {
+    const adsModule = require('react-native-google-mobile-ads');
+    BannerAd = adsModule.BannerAd;
+    BannerAdSize = adsModule.BannerAdSize;
+    TestIds = adsModule.TestIds;
+  } catch (error) {
+    console.log('Ad library not available:', error);
+  }
+}
 
 type SessionType = 'work' | 'short' | 'long';
 type ThemeMode = 'light' | 'dark';
@@ -258,24 +275,34 @@ export default function App() {
         </View>
       </View>
 
-      <View style={styles.controls}>
-        <PrimaryButton title={isRunning ? '一時停止' : '開始'} onPress={handleStartPause} style={styles.controlGrow} colors={colors} />
-        <SecondaryButton title="リセット" onPress={handleReset} colors={colors} />
-        <SecondaryButton title="スキップ" onPress={handleSkip} colors={colors} />
-      </View>
-
-      <Text style={[styles.counterText, { color: colors.textSecondary }]}>完了した作業: {completedWorkSessions}</Text>
-
-      {/* {__DEV__ && (
-        <View style={styles.adContainer}>
-          <AdMobBanner
-            bannerSize="banner"
-            adUnitID="ca-app-pub-3940256099942544/6300978111"
-            servePersonalizedAds={true}
-            onDidFailToReceiveAdWithError={(error) => console.log('AdMob error:', error)}
-          />
+      <View style={styles.bottomSection}>
+        <View style={styles.controls}>
+          <PrimaryButton title={isRunning ? '一時停止' : '開始'} onPress={handleStartPause} style={styles.controlGrow} colors={colors} />
+          <SecondaryButton title="リセット" onPress={handleReset} colors={colors} />
+          <SecondaryButton title="スキップ" onPress={handleSkip} colors={colors} />
         </View>
-      )} */}
+
+        <Text style={[styles.counterText, { color: colors.textSecondary }]}>完了した作業: {completedWorkSessions}</Text>
+
+        {/* 広告表示領域を常に確保 */}
+        <View style={styles.adContainer}>
+          {Constants.appOwnership !== 'expo' && BannerAd ? (
+            <BannerAd
+              unitId={TestIds?.BANNER || 'test-banner-id'}
+              size={BannerAdSize?.BANNER || 'BANNER'}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
+          ) : (
+            <View style={styles.adPlaceholder}>
+              <Text style={[styles.adPlaceholderText, { color: colors.textSecondary }]}>
+                広告エリア
+              </Text>
+            </View>
+          )}
+        </View>
+      </View>
 
       <SettingsModal
         visible={settingsVisible}
@@ -568,6 +595,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 20,
+    minHeight: 400,
   },
   timerRing: {
     width: 280,
@@ -728,5 +756,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
     alignItems: 'center',
+  },
+  bottomSection: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  adPlaceholder: {
+    width: 320,
+    height: 50,
+    backgroundColor: COLORS.muted,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  adPlaceholderText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
