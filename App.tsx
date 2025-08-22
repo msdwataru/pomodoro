@@ -221,7 +221,19 @@ export default function App() {
   function handleSkip() {
     clearTimer();
     setIsRunning(false);
-    onCompleteSession();
+    
+    // スキップ時は自動開始しない
+    if (currentSession === 'work') {
+      const nextCompleted = completedWorkSessions + 1;
+      setCompletedWorkSessions(nextCompleted);
+      const shouldLong = nextCompleted % settings.longBreakInterval === 0;
+      const nextType: SessionType = shouldLong ? 'long' : 'short';
+      setCurrentSession(nextType);
+      setRemainingMs(minutesToMs(getSessionMinutes(nextType, settings)));
+    } else {
+      setCurrentSession('work');
+      setRemainingMs(minutesToMs(getSessionMinutes('work', settings)));
+    }
   }
 
   function setSession(type: SessionType) {
