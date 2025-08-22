@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 5.2.0"
+    "version": ">= 12.0.0"
   },
   "build": {
     "development": {
@@ -8,17 +8,29 @@
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium"
+      },
+      "android": {
+        "resourceClass": "medium",
+        "gradleCommand": ":app:assembleDebug"
       }
     },
     "preview": {
       "distribution": "internal",
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "simulator": true
+      },
+      "android": {
+        "resourceClass": "medium",
+        "buildType": "apk"
       }
     },
     "production": {
       "ios": {
         "resourceClass": "m-medium"
+      },
+      "android": {
+        "resourceClass": "medium"
       }
     }
   },

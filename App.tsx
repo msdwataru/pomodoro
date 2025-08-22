@@ -307,7 +307,7 @@ export default function App() {
               }}
             />
           ) : (
-            <View style={styles.adPlaceholder}>
+            <View style={styles.adPlaceholder }>
               <Text style={[styles.adPlaceholderText, { color: colors.textSecondary }]}>
                 広告エリア
               </Text>
@@ -782,6 +782,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: COLORS.border,
+    opacity: 0,
   },
   adPlaceholderText: {
     fontSize: 14,
