@@ -6,17 +6,24 @@
     "orientation": "portrait",
     "icon": "./store-assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "updates": {
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.watarumasuda.pomodoro",
-      "buildNumber": "1",
       "infoPlist": {
+        "GADApplicationIdentifier": "ca-app-pub-7497478024453080~2249740226",
+        "NSUserTrackingUsageDescription": "This identifier will be used to deliver personalized ads to you.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
@@ -25,22 +32,18 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "package": "com.yourcompany.pomodoro",
-      "versionCode": 1
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      "package": "com.watarumasuda.pomodoro"
     },
     "plugins": [
+      "expo-dev-client",
+      "expo-build-properties",
       [
-        "expo-build-properties",
+        "react-native-google-mobile-ads",
         {
-          "ios": {
-            "useFrameworks": "static"
-          }
+          "androidAppId": "ca-app-pub-7497478024453080~5838766919",
+          "iosAppId": "ca-app-pub-7497478024453080~2249740226"
         }
-      ]
+      ]      
     ],
     "extra": {
       "eas": {
